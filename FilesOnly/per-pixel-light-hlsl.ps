@@ -1,0 +1,27 @@
+float3 lightPos;
+float4 lightAmbient;
+float4 lightDiffuse;
+float4 lightSpecular;
+float specularIntensity;
+
+struct PS_INPUT
+{
+   float4 IPosition : TEXCOORD0;
+   float3 Normal: TEXCOORD1;
+};
+
+float4 ps_main(PS_INPUT Input) : COLOR0
+{   
+   float3 lightDir = normalize(lightPos - Input.IPosition);
+   float3 cameraDir = normalize(-Input.IPosition);
+   float3 reflection = reflect(-lightDir, normalize(Input.Normal)); 
+   
+   float intensity = (dot(normalize(Input.Normal), lightDir));
+   float specular = max(0, dot(cameraDir, reflection));
+  
+   float4 finalColor = lightAmbient + 
+                     lightDiffuse * intensity + 
+                     lightSpecular * pow(specular, specularIntensity);
+   return saturate(finalColor);
+   
+}

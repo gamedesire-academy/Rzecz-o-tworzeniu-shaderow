@@ -1,0 +1,23 @@
+float4 lightAmbient;
+float4 lightDiffuse;
+float4 lightSpecular;
+float specularIntensity;
+
+struct PS_INPUT
+{
+   float4 Position : POSITION0;
+   float Specular : TEXCOORD1;
+   float Light : TEXCOORD2;
+   
+};
+
+float4 ps_main(PS_INPUT Input) : COLOR0
+{   
+   float4 finalColor = lightAmbient + 
+                        lightDiffuse * Input.Light + 
+                        lightSpecular * pow(Input.Specular, specularIntensity);
+   return saturate(finalColor);
+}
+
+
+

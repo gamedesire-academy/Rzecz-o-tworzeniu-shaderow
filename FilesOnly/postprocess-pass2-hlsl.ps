@@ -1,0 +1,40 @@
+sampler2D scene;
+float blurStrength;
+float time;
+
+struct PS_INPUT 
+{
+   float2 TexCoords: TEXCOORD0;
+   
+};
+
+float4 ps_main(PS_INPUT Input) : COLOR0
+{     
+   float4 finalColor = float4(0,0,0,0);
+   float strength = blurStrength * sin(time);
+   
+   
+   float2 uv = Input.TexCoords;
+   uv.x -= strength;
+   finalColor += tex2D(scene, uv);
+   
+   uv = Input.TexCoords;
+   uv.x += strength;
+   finalColor += tex2D(scene, uv);
+   
+   uv = Input.TexCoords;
+   uv.y -= strength;
+   finalColor += tex2D(scene, uv);
+   
+   uv = Input.TexCoords;
+   uv.y += strength;
+   finalColor += tex2D(scene, uv);
+   
+   finalColor = finalColor * 0.25;
+   
+   return finalColor; //tex2D(scene, Input.TexCoords);
+   
+}
+
+
+

@@ -1,0 +1,32 @@
+float4 lightAmbient;
+float4 lightDiffuse;
+
+sampler2D baseMap;
+sampler2D bumpMap;
+
+struct PS_INPUT 
+{
+   float2 Texcoord :        TEXCOORD0;
+   float3 Normal :          TEXCOORD1;
+   float3 LightDirection:   TEXCOORD2;
+   
+};
+
+float4 ps_main( PS_INPUT Input ) : COLOR0
+{      
+   float3 lightDir = normalize( Input.LightDirection );
+   float3 normal = normalize( ( tex2D( bumpMap, Input.Texcoord ).xyz * 2.0f ) - 1.0f );
+
+   float  diffuse = dot( normal, lightDir ); 
+
+   float4 texColor      = tex2D( baseMap, Input.Texcoord );
+   
+   float4 totalAmbient   = lightAmbient * texColor; 
+   float4 totalDiffuse   = lightDiffuse * diffuse * texColor; 
+   
+   return float4( saturate( totalAmbient + totalDiffuse ) );
+      
+}
+
+
+
